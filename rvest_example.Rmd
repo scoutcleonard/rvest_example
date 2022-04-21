@@ -1,0 +1,66 @@
+---
+title: "example"
+author: "Scout Leonard"
+date: '2022-04-20'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rvest)
+library(tidyverse)
+```
+
+Point to URL:
+
+```{r}
+url <- "https://ucsb-meds.github.io/overview.html"
+```
+
+Read the html:
+
+```{r}
+html <- read_html(url)
+```
+
+HTML elements allows you to pull an element associated with a specific tag. 
+
+`html_text()` gives us a vector that contains strings that we can use with a package like `tidy_text`. 
+
+```{r}
+#pull paragraphs
+paragraphs <- html %>% 
+  html_elements("p") #looks for the paragraph element
+
+paragraph_vector <- paragraphs %>% 
+  html_text()
+
+#pull titles 
+titles <- html %>% 
+  html_elements("title")
+
+
+```
+
+It can be helpful to pull an leement then use `html_text()` to convert elements to a more usable format. 
+
+```{r}
+level2_headers <- html %>% 
+  html_elements("h2")
+
+level2_headers %>% html_text() #gives us a nicer format: vector of level 2 headers 
+```
+
+If you want to use tabular data in an html document, `html_table()` can be helpful:
+
+```{r}
+tables <- html %>% 
+  html_elements("table")
+
+tables_clean <- html_table(html) #makes a nice tibble! 
+
+tables_clean[[1]] #if there is more than one table on a page, access the desired table by indexing the list of tables 
+```
+
+
